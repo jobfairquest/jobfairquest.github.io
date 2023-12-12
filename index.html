@@ -278,9 +278,9 @@
                         nextJob = jfJobs[ Math.floor(Math.random() * jfJobs.length)];
                     }
                     for(let j = i-4; j >= 0; j -= 4) {
-                        while (nextJob == charJobs[j]) {
+                        if (nextJob == charJobs[j]) {
                             nextJob = jfJobs[Math.floor(Math.random() * jfJobs.length)];
-                            j = i-4;
+                            j = i; // start over
                         }
                     }
                     charJobs.push(nextJob);

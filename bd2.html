@@ -163,9 +163,7 @@
                     jfJobs.push('Freelancer');
 
 
-                let charJobs = [];
-                if (opts & START_JOBS) // keep anyone from getting black mage in this case
-                    charJobs.push('Black Mage');
+                charJobs = [];
                 for (let i=0; i < getJobCount() * 4; i++) {
                     if (opts & FORCE_EARLY && i == 4) {
                         jfJobs = [...jobs];
@@ -176,20 +174,20 @@
                     if (opts & START_JOBS && i == 3) {
                         nextJob = "Black Mage";
                     } else {
-                        while(opts & DUPLICATES && charJobs.includes(nextJob)) {
+                        while ((opts & START_JOBS && nextJob == "Black Mage") || 
+                                (opts & DUPLICATES && charJobs.includes(nextJob))) {
                             nextJob = jfJobs[ Math.floor(Math.random() * jfJobs.length)];
                         }
                         for(let j = i-4; j >= 0; j -= 4) {
-                            while (nextJob == charJobs[j]) {
+                            if (nextJob == charJobs[j]) {
                                 nextJob = jfJobs[ Math.floor(Math.random() * jfJobs.length)];
-                                j = i-4;
+                                j = i; // start over
                             }
                         }
                     }
                     charJobs.push(nextJob);
                 }
                 if (opts & START_JOBS) // drop the extra black mage job at the beginning
-                    charJobs = charJobs.slice(1);
                 if (opts & WHITE_MAGE && !charJobs.includes('White Mage')) {
                     let white_mage_job;
                     do {
