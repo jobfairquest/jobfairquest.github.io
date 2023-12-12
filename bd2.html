@@ -78,13 +78,13 @@
             WHITE_MAGE=2
             DUPLICATES=4
             START_JOBS=8
+            FORCE_EARLY=16
 
             jobs = [
                 "Black Mage",
                 "White Mage",
                 "Vanguard",
                 "Monk",
-                "BraveBearer",
                 "Bard",
                 "BeastMaster",
                 "Gambler",
@@ -95,14 +95,15 @@
                 "Shieldmaster",
                 "Pictomancer",
                 "Dragoon",
-                "Swordmaster",
                 "SpiritMaster",
+                "Swordmaster",
                 "Oracle",
                 "Salve-Maker",
+                "Arcanist",
                 "Bastion",
                 "Phantom",
-                "Arcanist",
                 "Hellblade",
+                "BraveBearer",
             ];
             characters = ['seth', 'gloria', 'adelle', 'elvis'];
 
@@ -146,6 +147,8 @@
                     opts |= DUPLICATES;
                 if ($('#opt-start-jobs').checked)
                     opts |= START_JOBS;
+                if ($('#opt-force-early').checked)
+                    opts |= FORCE_EARLY;
                 return opts;
             }
 
@@ -153,12 +156,22 @@
                 createSlots()
                 opts = getOptions();
                 let jfJobs = [...jobs];
+                if (opts & FORCE_EARLY) {
+                    jfJobs = jobs.slice(0, 9);
+                }
                 if (opts & FREELANCER)
                     jfJobs.push('Freelancer');
 
 
                 let charJobs = [];
+                if (opts & START_JOBS) // keep anyone from getting black mage in this case
+                    charJobs.push('Black Mage');
                 for (let i=0; i < getJobCount() * 4; i++) {
+                    if (opts & FORCE_EARLY && i == 4) {
+                        jfJobs = [...jobs];
+                        if (opts & FREELANCER)
+                            jfJobs.push('Freelancer');
+                    }
                     let nextJob = jfJobs[Math.floor(Math.random() * jfJobs.length)];
                     if (opts & START_JOBS && i == 3) {
                         nextJob = "Black Mage";
@@ -175,6 +188,8 @@
                     }
                     charJobs.push(nextJob);
                 }
+                if (opts & START_JOBS) // drop the extra black mage job at the beginning
+                    charJobs = charJobs.slice(1);
                 if (opts & WHITE_MAGE && !charJobs.includes('White Mage')) {
                     let white_mage_job;
                     do {
@@ -214,6 +229,7 @@
             <label><input id='opt-white-mage' type='checkbox'>Guarantee White Mage</label>
             <label><input id='opt-duplicates' type='checkbox'>Don&rsquo;t Allow Duplicates</label>
             <label><input id='opt-start-jobs' type='checkbox'>Keep Elvis Black Mage Job</label>
+            <label><input id='opt-force-early' type='checkbox'>Guarantee One Early Job</label>
         </div>
         <div style='padding-left: 300px;padding-top:1em;'><button id='get-jobs'>Employ Me!</button></div>
         <div style='display:grid; grid-template-columns:auto auto;'>
