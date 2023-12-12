@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <title>Bravely Default II Job Fair</title>
         <style type='text/css'>
             body {
                 font-family: Roboto, sans-serif;
@@ -8,6 +9,18 @@
                 color: #eee;
                 max-width: 800px;
                 margin: auto;
+            }
+            #games, #options {
+                display:grid;
+                grid-template-columns:auto auto;
+            }
+            #games a {
+                color: white;
+                text-align: center;
+                text-decoration: none;
+            }
+            #games a:hover {
+                text-decoration: underline;
             }
             .job {
                 padding-left: 40px;
@@ -18,9 +31,23 @@
                 font-size: 24px;
                 margin-bottom: 5px;
             }
+            #opt-job-count {
+                opacity: 0;
+                position: absolute;
+                width: 200px;
+            }
+            #job-count-value {
+                margin-left: 5px;
+                padding: 0 3px;
+                background-color: white;
+                color: black;
+            }
             @media (prefers-color-scheme: light) {
                 body {
                     background-color: #eee;
+                    color: black;
+                }
+                #games a {
                     color: black;
                 }
             }
@@ -189,14 +216,34 @@
             };
 
             function setJob(character, jobnum, jobname) {
-                jobDiv = $('#' + character + '-job' + jobnum);
-                jobImage = jobImages[character][jobname]
-                if (!jobImage)
-                    jobImage = jobImages[character]['Freelancer'];
-                jobDiv.style.backgroundImage = 'url(data:image/gif;base64,' + jobImage + ')';
+                let jobDiv = $$('.' + character + '-job')
+                jobDiv = jobDiv[jobnum-1];
                 jobDiv.innerHTML = jobname;
+                if (window.jobImages) {
+                    jobImage = jobImages[character][jobname]
+                    if (!jobImage)
+                       jobImage = jobImages[character]['Freelancer'];
+                    jobDiv.style.backgroundImage = 'url(data:image/gif;base64,' + jobImage + ')';
+                }
             }
 
+            function getJobCount() {
+                return Number($('#opt-job-count').selectedOptions[0].value);
+            }
+
+            function createSlots() {
+                $$('.job').forEach(el => {
+                    el.remove()
+                });
+                characters.forEach(name => {
+                    for (let i=0; i < getJobCount(); i++) {
+                        let jobListDiv = $('#' + name);
+                        let jobDiv = document.createElement('div');
+                        jobDiv.className = name + '-job job'
+                        jobListDiv.appendChild(jobDiv);
+                    }
+                });
+            }
             function getOptions() {
                 let opts=0;
                 if ($('#opt-freelancer').checked)
@@ -213,6 +260,7 @@
             }
 
             function employ() {
+                createSlots()
                 opts = getOptions();
                 let jfJobs = [...jobs];
                 if (opts & FREELANCER)
@@ -224,74 +272,84 @@
 
 
                 let charJobs = [];
-                for (let i=0; i < 8; i++) {
+                for (let i=0; i < getJobCount() * 4; i++) {
                     let nextJob = jfJobs[ Math.floor(Math.random() * jfJobs.length)];
                     while(opts & DUPLICATES && charJobs.includes(nextJob)) {
                         nextJob = jfJobs[ Math.floor(Math.random() * jfJobs.length)];
                     }
-                    while(i % 2 && nextJob == charJobs[i-1]) {
-                        nextJob = jfJobs[ Math.floor(Math.random() * jfJobs.length)];
+                    for(let j = i-4; j >= 0; j -= 4) {
+                        while (nextJob == charJobs[j]) {
+                            nextJob = jfJobs[Math.floor(Math.random() * jfJobs.length)];
+                            j = i-4;
+                        }
                     }
                     charJobs.push(nextJob);
                 }
                 if (opts & WHITE_MAGE && !charJobs.includes('White Mage'))
                         charJobs[Math.floor(Math.random() * 8)] = 'White Mage';
-                for (let i=0; i < 8; i++) {
-                    setJob(characters[Math.floor(i / 2)], (i % 2) + 1, charJobs[i]);
+                for (let i=0; i < getJobCount() * 4; i++) {
+                    setJob(characters[i % 4], Math.floor(i / 4) + 1, charJobs[i]);
                 }
             }
 
             window.addEventListener('load', evt => {
                 $('button#get-jobs').addEventListener('click', employ);
                 employ();
+                $('#job-count-value').innerHTML = getJobCount();
+                $('#opt-job-count').addEventListener('change', e => {
+                    $('#job-count-value').innerHTML = getJobCount();
+                });
             });
         </script>
     </head>
     <body>
+        <h3 id='games'><a href="./">Final Fantasy V</a><a href="bd2.html">Bravely Default II</a></h3>
         <h1 style='text-align:center'>Final Fantasy V Job Fair</h1>
         <h2>Options</h2>
-        <div id='options' style='display:grid; grid-template-columns:auto auto;'>
+        <div id='options'>
+            <label>
+                <select id='opt-job-count'>
+                    <option value='2'>2</option>
+                    <option value='3'>3</option>
+                    <option value='4'>4</option>
+                    <option value='5'>5</option>
+                </select><span id='job-count-value'>2</span> Jobs Per Character
+            </label>
             <label><input id='opt-freelancer' type='checkbox'>Allow Freelancer</label>
             <label><input id='opt-mime' type='checkbox'>Allow Mime</label>
-            <label><input id='opt-gba' type='checkbox'>Allow GBA classes</label>
+            <label><input id='opt-gba' type='checkbox'>Allow GBA Only Jobs</label>
             <label><input id='opt-white-mage' type='checkbox'>Guarantee White Mage</label>
             <label><input id='opt-duplicates' type='checkbox'>Don&rsquo;t Allow Duplicates</label>
         </div>
         <div style='padding-left: 300px;padding-top:1em;'><button id='get-jobs'>Employ Me!</button></div>
         <div style='display:grid; grid-template-columns:auto auto;'>
-            <div>
+            <div id='bartz'>
                 <h2>Bartz</h2>
-                <div class='job' id='bartz-job1'></div>
-                <div class='job' id='bartz-job2'></div>
             </div>
-            <div>
+            <div id='lenna'>
                 <h2>Lenna</h2>
-                <div class='job' id='lenna-job1'></div>
-                <div class='job' id='lenna-job2'></div>
             </div>
-            <div>
+            <div id='galuf'>
                 <h2>Galuf</h2>
-                <div class='job' id='galuf-job1'></div>
-                <div class='job' id='galuf-job2'></div>
             </div>
-            <div>
+            <div id='faris'>
                 <h2>Faris</h2>
-                <div class='job' id='faris-job1'></div>
-                <div class='job' id='faris-job2'></div>
             </div>
         </div>
         <div>
             <h3>Rules</h3>
             <ol>
                 <li>Character must remain a freelancer until at least one of the jobs is available.</li>
-                <li>Character may switch freely between the 2 jobs until one job is mastered.</li>
-                <li>Once a job is mastered, the character must use their other job until it is also mastered.
+                <li>Character may switch freely between the assigned jobs until one job is mastered.</li>
+                <li>Once a job is mastered, it cannot be the main job until all jobs are mastered.
                     <ul>
-                        <li>If one job is mastered but the other job is unavailable, chracter must remain as the mastered job until the other job is available.</li>
-                        <li>Freelancer job is always considered &ldquo;mastered&rdquo;, so if the character has a freelancer job they must use the other job once available unil mastered.</li>
+                        <li>If one job is mastered but all other jobs are unavailable, chracter must remain as the mastered job until another job is available.</li>
+                        <li>Freelancer job is always considered &ldquo;mastered&rdquo;, so if the character has a freelancer job they must use other jobs once available until all are mastered.</li>
                     </ul></li>
-                <li>Once both jobs are mastered, character may switch freely between the 2 jobs.</li>
+                <li>Characters may use any aquired abilities freely.</li>
+                <li>Once all jobs are mastered, character may switch freely between jobs.</li>
                 <li>This is just for fun. Feel free to alter the rules to make it more fun.</li>
+            </ol>
             </ol>
     </body>
 </html>
