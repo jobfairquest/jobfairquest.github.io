@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Final Fantasy V Job Fair</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style type='text/css'>
             body {
                 font-family: Roboto, sans-serif;
@@ -11,13 +12,17 @@
                 margin: auto;
             }
             #games, #options {
+                width: fit-content;
+                margin: auto;
                 display:grid;
                 grid-template-columns:auto auto;
+                column-gap: 2em;
             }
             #games a {
                 color: white;
                 text-align: center;
                 text-decoration: none;
+                margin: 0 1em;
             }
             #games a:hover {
                 text-decoration: underline;
@@ -41,6 +46,21 @@
                 padding: 0 3px;
                 background-color: white;
                 color: black;
+            }
+            #button-holder {
+                margin-top: 1em;
+                text-align: center;
+            }
+            #jobs-display {
+                width: fit-content;
+                margin: auto;
+                display:grid;
+                grid-template-columns:auto auto;
+                column-gap: 2em;
+            }
+            #rules {
+                width: fit-content;
+                margin: auto;
             }
             @media (prefers-color-scheme: light) {
                 body {
@@ -305,51 +325,56 @@
     <body>
         <h3 id='games'><a href="./">Final Fantasy V</a><a href="bd2.html">Bravely Default II</a></h3>
         <h1 style='text-align:center'>Final Fantasy V Job Fair</h1>
-        <h2>Options</h2>
-        <div id='options'>
-            <label>
-                <select id='opt-job-count'>
-                    <option value='2'>2</option>
-                    <option value='3'>3</option>
-                    <option value='4'>4</option>
-                    <option value='5'>5</option>
-                </select><span id='job-count-value'>2</span> Jobs Per Character
-            </label>
-            <label><input id='opt-freelancer' type='checkbox'>Allow Freelancer</label>
-            <label><input id='opt-mime' type='checkbox'>Allow Mime</label>
-            <label><input id='opt-gba' type='checkbox'>Allow GBA Only Jobs</label>
-            <label><input id='opt-white-mage' type='checkbox'>Guarantee White Mage</label>
-            <label><input id='opt-duplicates' type='checkbox'>Don&rsquo;t Allow Duplicates</label>
-        </div>
-        <div style='padding-left: 300px;padding-top:1em;'><button id='get-jobs'>Employ Me!</button></div>
-        <div style='display:grid; grid-template-columns:auto auto;'>
-            <div id='bartz'>
-                <h2>Bartz</h2>
-            </div>
-            <div id='lenna'>
-                <h2>Lenna</h2>
-            </div>
-            <div id='galuf'>
-                <h2>Galuf</h2>
-            </div>
-            <div id='faris'>
-                <h2>Faris</h2>
+        <div id='options-holder'>
+            <div id='options'>
+                <label>
+                    <select id='opt-job-count'>
+                        <option value='2'>2</option>
+                        <option value='3'>3</option>
+                        <option value='4'>4</option>
+                        <option value='5'>5</option>
+                    </select><span id='job-count-value'>2</span> Jobs Per Character
+                </label>
+                <label><input id='opt-freelancer' type='checkbox'>Allow Freelancer</label>
+                <label><input id='opt-mime' type='checkbox'>Allow Mime</label>
+                <label><input id='opt-gba' type='checkbox'>Allow GBA Only Jobs</label>
+                <label><input id='opt-white-mage' type='checkbox'>Guarantee White Mage</label>
+                <label><input id='opt-duplicates' type='checkbox'>Don&rsquo;t Allow Duplicates</label>
             </div>
         </div>
-        <div>
-            <h3>Rules</h3>
-            <ol>
-                <li>Character must remain a freelancer until at least one of the jobs is available.</li>
-                <li>Character may switch freely between the assigned jobs until one job is mastered.</li>
-                <li>Once a job is mastered, it cannot be the main job until all jobs are mastered.
-                    <ul>
-                        <li>If one job is mastered but all other jobs are unavailable, chracter must remain as the mastered job until another job is available.</li>
-                        <li>Freelancer job is always considered &ldquo;mastered&rdquo;, so if the character has a freelancer job they must use other jobs once available until all are mastered.</li>
-                    </ul></li>
-                <li>Characters may use any aquired abilities freely.</li>
-                <li>Once all jobs are mastered, character may switch freely between jobs.</li>
-                <li>This is just for fun. Feel free to alter the rules to make it more fun.</li>
-            </ol>
-            </ol>
+        <div id='button-holder'><button id='get-jobs'>Employ Me!</button></div>
+        <div id='jobs-display-holder'>
+            <div id='jobs-display'>
+                <div id='bartz'>
+                    <h2>Bartz</h2>
+                </div>
+                <div id='lenna'>
+                    <h2>Lenna</h2>
+                </div>
+                <div id='galuf'>
+                    <h2>Galuf</h2>
+                </div>
+                <div id='faris'>
+                    <h2>Faris</h2>
+                </div>
+            </div>
+        </div>
+        <div id='rules-holder'>
+            <div id='rules'>
+                <h3>Rules</h3>
+                <ol>
+                    <li>Character must remain a freelancer until at least one of the jobs is available.</li>
+                    <li>Character may switch freely between the assigned jobs until one job is mastered.</li>
+                    <li>Once a job is mastered, it cannot be the main job until all jobs are mastered.
+                        <ul>
+                            <li>If one job is mastered but all other jobs are unavailable, chracter must remain as the mastered job until another job is available.</li>
+                            <li>Freelancer job is always considered &ldquo;mastered&rdquo;, so if the character has a freelancer job they must use other jobs once available until all are mastered.</li>
+                        </ul></li>
+                    <li>Characters may use any aquired abilities freely.</li>
+                    <li>Once all jobs are mastered, character may switch freely between jobs.</li>
+                    <li>This is just for fun. Feel free to alter the rules to make it more fun.</li>
+                </ol>
+            </div>
+        </div>
     </body>
 </html>
