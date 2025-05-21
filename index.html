@@ -22,7 +22,7 @@
                 color: white;
                 text-align: center;
                 text-decoration: none;
-                margin: 0 1em;
+                margin: 1em 1em 0;
             }
             #games a:hover {
                 text-decoration: underline;
@@ -88,6 +88,7 @@
             MIME=4
             WHITE_MAGE=8
             DUPLICATES=16
+            FORCE_EARLY=32
 
             jobs = [
                 "Knight",
@@ -276,7 +277,18 @@
                     opts |= WHITE_MAGE;
                 if ($('#opt-duplicates').checked)
                     opts |= DUPLICATES;
+                if ($('#opt-early').checked)
+                    opts |= FORCE_EARLY;
                 return opts;
+            }
+
+            function getJob(jobs, opts, i) {
+                let job = jobs[Math.floor(Math.random() * jobs.length)];
+                if (opts & FORCE_EARLY && i < 4) {
+                    job = jobs[Math.floor(Math.random() * 11)];
+                    console.log(i, job)
+                }
+                return job
             }
 
             function employ() {
@@ -293,14 +305,19 @@
 
                 let charJobs = [];
                 for (let i=0; i < getJobCount() * 4; i++) {
-                    let nextJob = jfJobs[ Math.floor(Math.random() * jfJobs.length)];
-                    while(opts & DUPLICATES && charJobs.includes(nextJob)) {
-                        nextJob = jfJobs[ Math.floor(Math.random() * jfJobs.length)];
-                    }
-                    for(let j = i-4; j >= 0; j -= 4) {
-                        if (nextJob == charJobs[j]) {
-                            nextJob = jfJobs[Math.floor(Math.random() * jfJobs.length)];
-                            j = i; // start over
+                    let nextJob = getJob(jfJobs, opts, i);
+                    // check for duplicates
+                    if (opts & DUPLICATES) {
+                        while(charJobs.includes(nextJob)) {
+                            nextJob = getJob(jfJobs, opts, i)
+                        }
+                    } else {
+                    // check to be sure THIS character doesn't have this job
+                        for(let j = i-4; j >= 0; j -= 4) {
+                            if (nextJob == charJobs[j]) {
+                                nextJob = getJob(jfJobs, opts, i)
+                                j = i; // start over
+                            }
                         }
                     }
                     charJobs.push(nextJob);
@@ -329,17 +346,19 @@
             <div id='options'>
                 <label>
                     <select id='opt-job-count'>
-                        <option value='2'>2</option>
+                        <option value='1'>1</option>
+                        <option value='2' selected>2</option>
                         <option value='3'>3</option>
                         <option value='4'>4</option>
                         <option value='5'>5</option>
                     </select><span id='job-count-value'>2</span> Jobs Per Character
                 </label>
                 <label><input id='opt-freelancer' type='checkbox'>Allow Freelancer</label>
-                <label><input id='opt-mime' type='checkbox'>Allow Mime</label>
-                <label><input id='opt-gba' type='checkbox'>Allow GBA Only Jobs</label>
-                <label><input id='opt-white-mage' type='checkbox'>Guarantee White Mage</label>
                 <label><input id='opt-duplicates' type='checkbox'>Don&rsquo;t Allow Duplicates</label>
+                <label><input id='opt-mime' type='checkbox'>Allow Mime</label>
+                <label><input id='opt-white-mage' type='checkbox'>Guarantee White Mage</label>
+                <label><input id='opt-gba' type='checkbox'>Allow GBA Only Jobs</label>
+                <label><input id='opt-early' type='checkbox'>Force One Wind/Water Job</label>
             </div>
         </div>
         <div id='button-holder'><button id='get-jobs'>Employ Me!</button></div>

@@ -34,7 +34,7 @@
                 color: white;
                 text-align: center;
                 text-decoration: none;
-                margin: 0 1em;
+                margin: 1em 1em 0;
             }
             #games a:hover {
                 text-decoration: underline;
@@ -47,6 +47,7 @@
                 align-items: center;
                 font-size: 24px;
                 margin-bottom: 5px;
+                white-space: nowrap;
             }
             #opt-job-count {
                 opacity: 0;
@@ -252,7 +253,8 @@
             <div id='options'>
                 <label>
                     <select id='opt-job-count'>
-                        <option value='2'>2</option>
+                        <option value='1'>1</option>
+                        <option value='2' selected>2</option>
                         <option value='3'>3</option>
                         <option value='4'>4</option>
                         <option value='5'>5</option>
@@ -262,7 +264,7 @@
                 <label><input id='opt-white-mage' type='checkbox'>Guarantee White Mage</label>
                 <label><input id='opt-duplicates' type='checkbox'>Don&rsquo;t Allow Duplicates</label>
                 <label><input id='opt-start-jobs' type='checkbox'>Keep Elvis Black Mage Job</label>
-                <label><input id='opt-force-early' type='checkbox'>Guarantee One Early Job</label>
+                <label><input id='opt-force-early' type='checkbox'>Force One Early Job</label>
             </div>
         </div>
         <div style='padding-left: 300px;padding-top:1em;'><button id='get-jobs'>Employ Me!</button></div>
