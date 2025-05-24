@@ -282,15 +282,6 @@
                 return opts;
             }
 
-            function getJob(jobs, opts, i) {
-                let job = jobs[Math.floor(Math.random() * jobs.length)];
-                if (opts & FORCE_EARLY && i < 4) {
-                    job = jobs[Math.floor(Math.random() * 11)];
-                    console.log(i, job)
-                }
-                return job
-            }
-
             function employ() {
                 createSlots()
                 opts = getOptions();
@@ -305,17 +296,17 @@
 
                 let charJobs = [];
                 for (let i=0; i < getJobCount() * 4; i++) {
-                    let nextJob = getJob(jfJobs, opts, i);
+                    let nextJob = jobs[Math.floor(Math.random() * jobs.length)];
                     // check for duplicates
                     if (opts & DUPLICATES) {
                         while(charJobs.includes(nextJob)) {
-                            nextJob = getJob(jfJobs, opts, i)
+                            nextJob = jobs[Math.floor(Math.random() * jobs.length)];
                         }
                     } else {
                     // check to be sure THIS character doesn't have this job
                         for(let j = i-4; j >= 0; j -= 4) {
                             if (nextJob == charJobs[j]) {
-                                nextJob = getJob(jfJobs, opts, i)
+                                nextJob = jobs[Math.floor(Math.random() * jobs.length)];
                                 j = i; // start over
                             }
                         }
@@ -324,6 +315,28 @@
                 }
                 if (opts & WHITE_MAGE && !charJobs.includes('White Mage'))
                         charJobs[Math.floor(Math.random() * 8)] = 'White Mage';
+                // check for early jobs
+                if (FORCE_EARLY) {
+                    for (let i=3; i >= 0; i--) {
+                        has_early_job = false;
+                        for (let j=0; j < getJobCount(); j++) {
+                            if (jobs.indexOf(charJobs[i + j*4]) <= 10)
+                            {
+                                has_early_job = true;
+                            }
+                        }
+                        // no early job for this char, assign one
+                        if (!has_early_job) {
+                            let thisJob;
+                            do {
+                                thisJob = jobs[Math.floor(Math.random() * 11)];
+                            } while (DUPLICATES && charJobs.includes(thisJob));
+                            charJobs[i] = thisJob;
+                            console.log('Forced early job ' + thisJob + 
+                                ' for character ' + i)
+                        }
+                    }
+                }
                 for (let i=0; i < getJobCount() * 4; i++) {
                     setJob(characters[i % 4], Math.floor(i / 4) + 1, charJobs[i]);
                 }
